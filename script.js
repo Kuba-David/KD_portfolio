@@ -1,3 +1,4 @@
+// Tenhle skript řeší problémy s vh jednotkami. Přepočítává skutečnou výšku viewportu.
 function setRealVH() {
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--real-vh', `${vh}px`);
@@ -5,20 +6,16 @@ function setRealVH() {
 setRealVH();
 window.addEventListener('resize', setRealVH);
 
-// function fitText(el, compressor = 1) {
-//   const resizeText = () => {
-//     const parentWidth = el.parentElement.offsetWidth;
-//     let newFontSize = (parentWidth / (el.textContent.length)) * compressor;
-//     el.style.fontSize = newFontSize + 'px';
-//   };
+// Tenhle script řeší yalamování jednoznakovek. Přidává nedělitelnou mezeru před písmena, která by mohla zůstat na konci řádku.
+function fixWidows(selector = 'p, h1, h2, h3, h4, span, li') {
+  const elements = document.querySelectorAll(selector);
+  const regex = /(\s)([ksvzaiouKSZVAIUO])\s/g;
 
-//   // Init
-//   resizeText();
+  elements.forEach(el => {
+    el.innerHTML = el.innerHTML.replace(regex, '$1$2&nbsp;');
+  });
+}
 
-//   // Refit on resize
-//   window.addEventListener('resize', resizeText);
-// }
-
-// // Použij na element s classou .text-prim a .text-sec
-// document.querySelectorAll('.text-prim, .text-sec').forEach(el => fitText(el, 1.85));
-
+document.addEventListener('DOMContentLoaded', () => {
+  fixWidows();
+});

@@ -25,8 +25,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scroll-behavior:smooth;
   }
-
 
   .oswald-bold {
     font-family: "Oswald", sans-serif;
@@ -257,23 +257,41 @@
     transform: scale(0.97);
   }
 
-  .section {
-    padding: var(--spacing-xl) var(--spacing-lg);
+  .about {
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-xxl) var(--spacing-lg);
   }
 
-  h3 {
+  .about h3 {
     font-family: "Oswald", sans-serif;
     font-size: var(--font-size-xxl);
     color: var(--text-light);
     text-align: left;
+    margin-top: var(--spacing-xl);
   }
 
   .circle-container {
     position: relative;
     width: 300px;
-    height: 400px;
+    height: 300px;
     margin: auto;
+    transform-origin: center;
+    transition: transform 0.3s ease;
   }
+    /* tablet a víc */
+    @media (min-width: 768px) {
+      .circle-container {
+        transform: scale(1.3);
+        height: 400px;
+      }
+    }
+
+    /* větší desktop */
+    @media (min-width: 1024px) {
+      .circle-container {
+        transform: scale(1.5);
+        height: 500px;
+      }
+    }
 
   .annotation {
     position: absolute;
@@ -292,7 +310,7 @@
     height: 340px;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background-color: #1B1B1B;
+    background: var(--bg-color-dark);
     z-index: 0;
   }
 
@@ -320,7 +338,7 @@
     margin: -20px;
     transform: rotate(calc(var(--i) * 45deg)) translate(130px) rotate(calc(var(--i) * -45deg));
     animation: icoBreathe 4s ease-in-out infinite;
-    animation-delay: calc(var(--i) * 0.3s);
+    animation-delay: calc(var(--i) * 0.45s);
     z-index: 5;
   }
 
@@ -333,6 +351,7 @@
 
   .icon:hover {
     animation-play-state: paused;
+    transform: scale(1);
   }
 
   /* Dýchací efekt */
@@ -343,19 +362,19 @@
       transform: rotate(calc(var(--i) * 45deg)) translate(130px) rotate(calc(var(--i) * -45deg)) scale(1);
     }
 
-    50% {
-      transform: rotate(calc(var(--i) * 45deg)) translate(130px) rotate(calc(var(--i) * -45deg)) scale(1.1);
+    66% {
+      transform: rotate(calc(var(--i) * 45deg)) translate(130px) rotate(calc(var(--i) * -45deg)) scale(1.25);
     }
+
   }
 
-  /* Tooltip efekt */
   .icon::after {
     content: attr(data-label);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #B29F5D;
+    color: var(--accent-dark);
     font-size: 14px;
     font-weight: 500;
     white-space: nowrap;
@@ -382,6 +401,54 @@
     font-size: var(--font-size-lg);
   }
   
+  .gallery-section {
+    background-color: #232323;
+    color: #B29F5D;
+    padding-top: var(--spacing-sm);
+  }
+
+  .gallery-hero {
+    background-color: #ececec;
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin: var(--spacing-sm);
+    align-content: end;
+    margin-top: 0;
+    border-radius: var(--border-radius);
+    height: 40vh;
+  }
+
+  .gallery-hero h3 {
+    font-family: "Oswald", sans-serif;
+    font-size: var(--font-size-xxl);
+    color: var(--accent-dark);
+    text-align: right;
+
+  }
+  .gallery-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 16px;
+    gap: var(--spacing-sm);
+    padding: 0 var(--spacing-sm);
+    padding-bottom: var(--spacing-xxl);
+  }
+
+  .gallery-item {
+    flex: 0 0 80%;
+    max-width: 60%;
+    aspect-ratio: 1/1;
+    background: #ececec;
+    border-radius: var(--border-radius);
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
   footer {
     text-align: center;
