@@ -21,11 +21,28 @@
     --font-size-xxl: 64px;
   }
 
+  /* Scrollbar celé stránky nebo konkrétního elementu */
+  ::-webkit-scrollbar {
+    width: var(--spacing-md);
+  }
+
+  /* Track (pozadí scrollbaru) */
+  ::-webkit-scrollbar-track {
+    background: var(--bg-color);
+  }
+
+  /* Thumb (posuvná část) */
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--bg-color-light);
+    border-radius: var(--border-radius);
+    border: 4px solid var(--bg-color);
+  }
+
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    scroll-behavior:smooth;
+    scroll-behavior: smooth;
   }
 
   .oswald-bold {
@@ -40,7 +57,7 @@
     font-optical-sizing: auto;
     font-weight: 200;
     font-style: normal;
-    
+
   }
 
   .baskervville-regular-italic {
@@ -57,6 +74,33 @@
     background-color: var(--bg-color);
   }
 
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    color: var(--accent-dark);
+    background-color: transparent;
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin: var(--spacing-sm);
+    border: 2px solid var(--accent-dark);
+    border-radius: var(--border-radius);
+    font-family: 'Lexend', sans-serif;
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.5s ease-in-out, border 0.5s ease-in-out, transform 0.2s ease-out;
+  }
+
+  .btn svg {
+    width: 20px;
+    height: 20px;
+    transition: fill 0.5s ease-in-out;
+  }
+
+  .btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
 
   header {
     display: flex;
@@ -221,7 +265,7 @@
     align-items: center;
     color: var(--text-light);
     text-decoration: none;
-    font-weight: 400;
+    font-weight: 700;
     font-size: clamp(16px, 2vw, 24px);
   }
 
@@ -234,31 +278,9 @@
   }
 
 
-  .btn {
-    background-color: var(--accent);
-    color: var(--bg-color);
-    padding: var(--spacing-lg) var(--spacing-xl);
-    border: none;
-    border-radius: var(--border-radius-btn);
-    font-family: 'Lexend', sans-serif;
-    font-size: var(--font-size-xl);
-    font-weight: 800;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-bottom: 5vh;
-    transition: background-color 0.3s ease, transform 0.2s ease-out;
-  }
-
-  .btn:hover {
-    background-color: var(--accent-dark);
-  }
-
-  .btn:active {
-    transform: scale(0.97);
-  }
-
   .about {
-    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-xxl) var(--spacing-lg);
+    padding: var(--spacing-xl) var(--spacing-lg) 0 var(--spacing-lg);
+    margin-bottom: var(--spacing-xxl);
   }
 
   .about h3 {
@@ -277,21 +299,22 @@
     transform-origin: center;
     transition: transform 0.3s ease;
   }
-    /* tablet a víc */
-    @media (min-width: 768px) {
-      .circle-container {
-        transform: scale(1.3);
-        height: 400px;
-      }
-    }
 
-    /* větší desktop */
-    @media (min-width: 1024px) {
-      .circle-container {
-        transform: scale(1.5);
-        height: 500px;
-      }
+  /* tablet a víc */
+  @media (min-width: 768px) {
+    .circle-container {
+      transform: scale(1.3);
+      height: 400px;
     }
+  }
+
+  /* větší desktop */
+  @media (min-width: 1024px) {
+    .circle-container {
+      transform: scale(1.5);
+      height: 500px;
+    }
+  }
 
   .annotation {
     position: absolute;
@@ -396,25 +419,30 @@
   .aboutTxt {
     color: var(--accent);
   }
+
   .aboutTxtNote {
     color: var(--text-light);
     font-size: var(--font-size-lg);
   }
-  
+
   .gallery-section {
     background-color: #232323;
     color: #B29F5D;
     padding-top: var(--spacing-sm);
+    margin-bottom: var(--spacing-xxl);
   }
 
   .gallery-hero {
-    background-color: #ececec;
-    padding: var(--spacing-md) var(--spacing-lg);
+    background-image: url(images/gal/JJ68_boxstudio.webp);
+    background-size: cover;
+    background-position: center;
+    padding: var(--spacing-lg);
     margin: var(--spacing-sm);
     align-content: end;
     margin-top: 0;
     border-radius: var(--border-radius);
     height: 40vh;
+    overflow: hidden;
   }
 
   .gallery-hero h3 {
@@ -424,14 +452,27 @@
     text-align: right;
 
   }
+
+  .gallery-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .gallery-carousel {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    scroll-padding-left: 16px;
+    scroll-padding-left: var(--spacing-sm);
     gap: var(--spacing-sm);
     padding: 0 var(--spacing-sm);
-    padding-bottom: var(--spacing-xxl);
+    padding-bottom: var(--spacing-sm);
+  }
+
+  .spacer {
+    flex: 0 0 var(--spacing-sm);
+    /* prázdné místo vlevo i vpravo */
+    pointer-events: none;
   }
 
   .gallery-item {
@@ -448,6 +489,13 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .btnToProjects {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 var(--spacing-md);
   }
 
   footer {
