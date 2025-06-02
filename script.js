@@ -19,3 +19,8 @@ function fixWidows(selector = 'p, h1, h2, h3, h4, span, li') {
 document.addEventListener('DOMContentLoaded', () => {
   fixWidows();
 });
+
+// Tenhle skript přidává smooth scroll na odkazy s ID.
+document.getElementById('scrollToProjects').addEventListener('click', function () {
+  document.querySelector('#projects').scrollIntoView({ behavior: 'smooth' });
+});
