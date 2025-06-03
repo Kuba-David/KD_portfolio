@@ -300,18 +300,9 @@
     transition: transform 0.3s ease;
   }
 
-  /* tablet a víc */
-  @media (min-width: 768px) {
-    .circle-container {
-      transform: scale(1.3);
-      height: 400px;
-    }
-  }
-
-  /* větší desktop */
   @media (min-width: 1024px) {
     .circle-container {
-      transform: scale(1.5);
+      transform: scale(1.3);
       height: 500px;
     }
   }
@@ -377,7 +368,6 @@
     transform: scale(1);
   }
 
-  /* Dýchací efekt */
   @keyframes icoBreathe {
 
     0%,
@@ -425,7 +415,7 @@
     font-size: var(--font-size-lg);
   }
 
-  .gallery-section {
+  .gallery {
     background-color: #232323;
     color: #B29F5D;
     padding-top: var(--spacing-sm);
@@ -443,6 +433,7 @@
     margin-top: 0;
     border-radius: var(--border-radius);
     height: 30vh;
+    min-height: 280px;
     overflow: hidden;
   }
 
@@ -478,7 +469,7 @@
   }
 
   .gallery-item {
-    flex: 0 0 80%;
+    flex: 0 0 80%; 
     max-width: 60%;
     aspect-ratio: 1/1;
     background: var(--bg-color-dark);
@@ -486,6 +477,12 @@
     scroll-snap-align: start;
     overflow: hidden;
   }
+
+  @media (min-width: 768px) {
+  .gallery-item {
+    flex: 0 0 18%;
+  }
+}
 
   .gallery-item img {
     width: 100%;
@@ -500,29 +497,108 @@
     padding: 0 var(--spacing-md);
   }
 
+  .projects {
+    margin-bottom: var(--spacing-xxl);
+  }
+  .projects h3 {
+    font-family: "Oswald", sans-serif;
+    font-size: var(--font-size-xxl);
+    color: var(--text-light);
+    text-align: left;
+    margin-left: var(--spacing-lg);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-sm);
+    margin: var(--spacing-lg) var(--spacing-sm);
+  }
+
+  .item {
+    aspect-ratio: 1 / 1; /* 👈 udrží čtverec */
+    overflow: hidden;
+  }
+
+  /* Všechny obrázky */
+  .item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--border-radius);
+    background-color: var(--bg-color-dark);
+  }
+
+  /* Varianty dlaždic */
+  .square {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .wide {
+    grid-column: span 2;
+    grid-row: span 1;
+    aspect-ratio: 2 / 1; /* 👈 udrží obdélník */
+  }
+
+  .tall {
+    grid-column: span 1;
+    grid-row: span 2;
+    aspect-ratio: 1 / 2; /* 👈 udrží obdélník */
+  }
+
+  .big {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  /* Na větších displejích */
+  @media (min-width: 768px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+
   .contact {
     padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-xxl);
+    margin-bottom: var(--spacing-xl);
   }
 
   .contact h3 {
     font-family: "Oswald", sans-serif;
     font-size: var(--font-size-xxl);
-    color: var(--text-light);
+    color: var(--accent-dark);
     text-align: left;
   }
 
   .contact-link {
-    color: var(--accent);
+    color: var(--text-light);
     text-decoration: none;
     font-weight: 700;
     font-size: var(--font-size-lg);
   }
 
   footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 2rem;
-    font-size: 0.9rem;
-    color: #999;
+    padding: var(--spacing-md);
+    font-size: var(--font-size-md);
+    color: var(--bg-color-light);
+  }
+
+   .logo {
+    margin: var(--spacing-lg);
+    width: 180px;
+    height: auto;
   }
 
