@@ -6,7 +6,7 @@ function setRealVH() {
 setRealVH();
 window.addEventListener('resize', setRealVH);
 
-// Tenhle script řeší yalamování jednoznakovek. Přidává nedělitelnou mezeru před písmena, která by mohla zůstat na konci řádku.
+// Tenhle script řeší zalamování jednoznakovek. Přidává nedělitelnou mezeru před písmena, která by mohla zůstat na konci řádku.
 function fixWidows(selector = 'p, h1, h2, h3, h4, span, li') {
   const elements = document.querySelectorAll(selector);
   const regex = /(\s)([ksvzaiouKSZVAIUO])\s/g;
