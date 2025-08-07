@@ -467,8 +467,8 @@
     align-content: end;
     margin-top: 0;
     border-radius: var(--border-radius);
-    height: 30vh;
-    min-height: 280px;
+    height: 25dvh;
+    min-height: 220px;
     overflow: hidden;
   }
 
@@ -544,8 +544,8 @@
     margin-top: 0;
     align-content: end;
     border-radius: var(--border-radius);
-    height: 30vh;
-    min-height: 280px;
+    height: 25dvh;
+    min-height: 220px;
     overflow: hidden;
   }
 
@@ -579,7 +579,6 @@
   }
 
   .item {
-    aspect-ratio: 1 / 1; /* 👈 udrží čtverec */
     overflow: hidden;
   }
 
@@ -597,12 +596,15 @@
   .square {
     grid-column: span 1;
     grid-row: span 1;
+    aspect-ratio: 1 / 1; /* 👈 udrží čtverec */
+
   }
 
   .wide {
     grid-column: span 2;
     grid-row: span 1;
-    aspect-ratio: 2 / 1; /* 👈 udrží obdélník */
+    max-height: calc(100% - var(--spacing-sm));
+    /* aspect-ratio: 2 / 1; 👈 udrží obdélník */
   }
 
   .tall {
@@ -614,21 +616,8 @@
   .big {
     grid-column: span 2;
     grid-row: span 2;
+    aspect-ratio: 1 / 1; /* 👈 udrží čtverec */
   }
-
-  /* Na větších displejích */
-  @media (min-width: 768px) {
-    .portfolio-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .portfolio-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
 
   .contact {
     display: flex;
