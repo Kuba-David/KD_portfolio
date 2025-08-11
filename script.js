@@ -17,40 +17,39 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
   document.querySelector('#projects').scrollIntoView({ behavior: 'smooth' });
 });
 
-// Lightbox pro projekty
+// Lightbox pro více projektů (lokální pro každý .projects-grid, sdílený modal)
 (() => {
-  const grid = document.querySelector('.projects-grid');
-  if (!grid) return;
-
-  const items = Array.from(grid.querySelectorAll('.item img'))
-    .map((img, idx) => ({ el: img, src: img.getAttribute('src'), alt: img.getAttribute('alt') || `Image ${idx+1}` }))
-    .filter(it => it.src && it.src.trim() !== '');
-
-  if (!items.length) return;
-
   const modal = document.getElementById('projectLightbox');
-  const imgEl = modal.querySelector('.plb__img');
-  const stage = modal.querySelector('.plb__stage');
-  const dotsWrap = modal.querySelector('.plb__dots');
-  const counterEl = modal.querySelector('.plb__counter');
-  const btnClose = modal.querySelector('.plb__close');
-  const btnPrev = modal.querySelector('.plb__arrow--left');
-  const btnNext = modal.querySelector('.plb__arrow--right');
+  if (!modal) return;
 
-  // Stav
+  const imgEl     = modal.querySelector('.plb__img');
+  const stage     = modal.querySelector('.plb__stage');
+  const dotsWrap  = modal.querySelector('.plb__dots');
+  const counterEl = modal.querySelector('.plb__counter');
+  const btnClose  = modal.querySelector('.plb__close');
+  const btnPrev   = modal.querySelector('.plb__arrow--left');
+  const btnNext   = modal.querySelector('.plb__arrow--right');
+
+  // Stav pro AKTUÁLNĚ otevřenou galerii
+  let items = [];              // [{el, src, alt}, ...] pro konkrétní .projects-grid
+  let dots  = [];              // NodeList teček pro aktuální galerii
   let index = 0;
-  let baseW = 0, baseH = 0;        // rozměry obrázku v modalu při scale=1
-  let scale = 1, tx = 0, ty = 0;   // zoom/pan
-  let gesture = null;              // 'swipe' | 'pan'
+
+  // Zoom/pan/swipe stav
+  let baseW = 0, baseH = 0;
+  let scale = 1, tx = 0, ty = 0;
+  let gesture = null;          // 'swipe' | 'pan'
   let startX = 0, startY = 0, curX = 0, curY = 0;
   let panStartX = 0, panStartY = 0;
 
   // double-tap detekce
   let lastTapTime = 0, lastTapX = 0, lastTapY = 0;
 
-  // Tečky
-  dotsWrap.innerHTML = items.map((_, i) => `<span class="plb__dot" data-i="${i}"></span>`).join('');
-  const dots = Array.from(dotsWrap.querySelectorAll('.plb__dot'));
+  // --- Pomocné funkce ---
+  function setupDots() {
+    dotsWrap.innerHTML = items.map((_, i) => `<span class="plb__dot" data-i="${i}"></span>`).join('');
+    dots = Array.from(dotsWrap.querySelectorAll('.plb__dot'));
+  }
 
   function applyTransform() {
     imgEl.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
@@ -58,10 +57,8 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
   }
 
   function measureBase() {
-    // změř rozměry při scale=1 (aktuální obrázek)
     const r = imgEl.getBoundingClientRect();
-    baseW = r.width;
-    baseH = r.height;
+    baseW = r.width; baseH = r.height;
   }
 
   function clampPan() {
@@ -82,8 +79,7 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
   function toggleZoomAt(clientX, clientY) {
     const sr = stage.getBoundingClientRect();
     if (scale === 1) {
-      const s = 2.2; // cílový zoom
-      // posun tak, aby bod pod kurzorem/tapem zůstal (zhruba) uprostřed
+      const s = 2.2;
       const dx = clientX - (sr.left + sr.width / 2);
       const dy = clientY - (sr.top + sr.height / 2);
       scale = s;
@@ -97,33 +93,37 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
   }
 
   function updateNavState() {
-    // bez loopu: deaktivuj šipky na krajích
+    // bez loopu (i když jsou šipky skryté, logika zůstává kvůli klávesám)
     const atFirst = index === 0;
     const atLast  = index === items.length - 1;
-
-    btnPrev.classList.toggle('is-disabled', atFirst);
-    btnNext.classList.toggle('is-disabled', atLast);
-    btnPrev.setAttribute('aria-disabled', atFirst ? 'true' : 'false');
-    btnNext.setAttribute('aria-disabled', atLast ? 'true' : 'false');
+    btnPrev?.classList.toggle('is-disabled', atFirst);
+    btnNext?.classList.toggle('is-disabled', atLast);
+    btnPrev?.setAttribute('aria-disabled', atFirst ? 'true' : 'false');
+    btnNext?.setAttribute('aria-disabled', atLast ? 'true' : 'false');
   }
 
   function show(i, {fromKeyboard = false} = {}) {
-    // clamp bez modulo (no loop)
+    if (!items.length) return;
     index = Math.max(0, Math.min(items.length - 1, i));
     const { src, alt } = items[index];
-    // reset zoom při změně obrázku
+
     resetZoom();
     imgEl.src = src;
     imgEl.alt = alt;
 
+    // aktivní tečka + čítač
+    if (dots.length !== items.length) setupDots();
     dots.forEach((d, di) => d.classList.toggle('is-active', di === index));
     counterEl.textContent = `${index + 1} / ${items.length}`;
+
     updateNavState();
+
+    if (fromKeyboard) {
+      imgEl.animate([{opacity:.8},{opacity:1}], {duration:120});
+    }
   }
 
-  // Po načtení obrázku přeměřit base rozměry
   imgEl.addEventListener('load', () => {
-    // chvilka na layout a pak změřit
     requestAnimationFrame(() => {
       measureBase();
       applyTransform();
@@ -135,7 +135,7 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
     modal.classList.remove('hidden');
     modal.setAttribute('aria-hidden', 'false');
     show(i);
-     btnClose.focus({preventScroll:true});
+    btnClose.focus({preventScroll:true});
   }
 
   function close() {
@@ -144,38 +144,51 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
     document.body.style.overflow = '';
   }
 
-  // Delegace kliknutí v gridu
-  grid.addEventListener('click', (e) => {
-    const img = e.target.closest('img');
-    if (!img) return;
-    const i = items.findIndex(it => it.el === img);
-    if (i >= 0) openAt(i);
+  // --- Připojení na všechny .projects-grid (lokální set obrázků) ---
+  const allGrids = document.querySelectorAll('.projects-grid');
+  allGrids.forEach(grid => {
+    const localItems = Array.from(grid.querySelectorAll('.item img'))
+      .map((img, idx) => ({ el: img, src: img.getAttribute('src'), alt: img.getAttribute('alt') || `Image ${idx+1}` }))
+      .filter(it => it.src && it.src.trim() !== '');
+
+    if (!localItems.length) return;
+
+    grid.addEventListener('click', (e) => {
+      const img = e.target.closest('img');
+      if (!img) return;
+      const i = localItems.findIndex(it => it.el === img);
+      if (i >= 0) {
+        items = localItems;   // ← přepni na danou galerii
+        setupDots();          // ← tečky pro tuto galerii
+        openAt(i);
+      }
+    });
   });
 
-  // Ovládání šipek
+  // --- Ovládání / interakce ---
   btnClose.addEventListener('click', close);
-  btnPrev.addEventListener('click', () => { if (index > 0) show(index - 1, {fromKeyboard:true}); });
-  btnNext.addEventListener('click', () => { if (index < items.length - 1) show(index + 1, {fromKeyboard:true}); });
+  btnPrev?.addEventListener('click', () => { if (index > 0) show(index - 1, {fromKeyboard:true}); });
+  btnNext?.addEventListener('click', () => { if (index < items.length - 1) show(index + 1, {fromKeyboard:true}); });
 
-  // Klik mimo stage zavírá
   modal.addEventListener('click', (e) => {
     const within = e.target.closest('.plb__stage, .plb__arrow, .plb__dots, .plb__close');
     if (!within) close();
   });
 
-  // Tečky
   dotsWrap.addEventListener('click', (e) => {
     const dot = e.target.closest('.plb__dot');
     if (!dot) return;
-    show(parseInt(dot.dataset.i, 10), {fromKeyboard:true});
+    const i = parseInt(dot.dataset.i, 10);
+    if (!Number.isNaN(i)) show(i, {fromKeyboard:true});
   });
 
-  // Klávesnice
   document.addEventListener('keydown', (e) => {
     if (modal.classList.contains('hidden')) return;
     if (e.key === 'Escape') close();
     if (e.key === 'ArrowRight' && index < items.length - 1 && scale === 1) show(index + 1, {fromKeyboard:true});
     if (e.key === 'ArrowLeft'  && index > 0 && scale === 1) show(index - 1, {fromKeyboard:true});
+    if (e.key === 'Home' && scale === 1) show(0, {fromKeyboard:true});
+    if (e.key === 'End'  && scale === 1) show(items.length - 1, {fromKeyboard:true});
   });
 
   // Double-click (desktop)
@@ -230,7 +243,7 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
     }
   }
 
-  function onPointerUp(e) {
+  function onPointerUp() {
     if (!gesture) return;
 
     if (gesture === 'swipe' && scale === 1) {
