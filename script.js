@@ -144,26 +144,37 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
     document.body.style.overflow = '';
   }
 
-  // --- Připojení na všechny .projects-grid (lokální set obrázků) ---
-  const allGrids = document.querySelectorAll('.projects-grid');
-  allGrids.forEach(grid => {
-    const localItems = Array.from(grid.querySelectorAll('.item img'))
-      .map((img, idx) => ({ el: img, src: img.getAttribute('src'), alt: img.getAttribute('alt') || `Image ${idx+1}` }))
+// --- Připojení na více galerií: .projects-grid i .gallery-carousel ---
+function attachLocalLightbox(containerSelector, imageSelector) {
+  const containers = document.querySelectorAll(containerSelector);
+  containers.forEach(container => {
+    const localItems = Array.from(container.querySelectorAll(imageSelector))
+      .map((img, idx) => ({
+        el: img,
+        src: img.getAttribute('src'),
+        alt: img.getAttribute('alt') || `Image ${idx+1}`
+      }))
       .filter(it => it.src && it.src.trim() !== '');
 
     if (!localItems.length) return;
 
-    grid.addEventListener('click', (e) => {
+    // otevři modal při kliku na libovolný obrázek v tomto kontejneru
+    container.addEventListener('click', (e) => {
       const img = e.target.closest('img');
       if (!img) return;
       const i = localItems.findIndex(it => it.el === img);
       if (i >= 0) {
-        items = localItems;   // ← přepni na danou galerii
-        setupDots();          // ← tečky pro tuto galerii
-        openAt(i);
+        items = localItems;   // ← přepni na lokální sadu této galerie
+        setupDots();          // ← vytvoř tečky pro aktuální sadu
+        openAt(i);            // ← otevři modal na daném indexu
       }
     });
   });
+}
+
+// Volání pro oba typy galerií:
+attachLocalLightbox('.projects-grid', '.item img');
+attachLocalLightbox('.gallery-carousel', '.gallery-item img');
 
   // --- Ovládání / interakce ---
   btnClose.addEventListener('click', close);

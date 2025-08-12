@@ -501,9 +501,9 @@
     gap: var(--spacing-sm);
     padding: 0 var(--spacing-sm);
     padding-bottom: var(--spacing-sm);
-
+    scroll-behavior: smooth; 
   }
-
+  
   .spacer {
     flex: 0 0 var(--spacing-sm);
     /* prázdné místo vlevo i vpravo */
@@ -686,22 +686,23 @@
     justify-content: center;
     width: 100%;
     color: var(--accent-dark);
-    background-color: transparent;
+    background-color: var(--bg-color);
     margin-top: var(--spacing-sm);
     padding: var(--spacing-md) var(--spacing-lg);
     border: 2px solid var(--accent-dark);
-    border-radius: var(--border-radius-lg);
+    border-radius: var(--border-radius);
     font-family: 'Lexend', sans-serif;
     font-size: var(--font-size-md);
     text-decoration: none;
     text-align: center;
     font-weight: 700;
     cursor: pointer;
-    transition: color 0.5s ease-in-out, border 0.5s ease-in-out, transform 0.2s ease-out;
+    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out, border 0.5s ease-in-out, transform 0.2s ease-out;
   }
 
   .btnProject:hover {
     color: var(--accent);
+    background-color: var(--bg-color-dark);
     border-color: var(--accent);
   }
 
@@ -761,9 +762,10 @@
   }
 
   .plb__stage {
-    max-width: 90vw;
+    max-width: calc(100vw - (var(--spacing-sm) * 2));
     max-height: 80vh;
     display: grid;
+    /* padding: var(--spacing-sm); */
     place-items: center;
     overflow: hidden;
     touch-action: none;
@@ -782,6 +784,7 @@
 
   .plb__img.is-zoomed {
     cursor: grab;
+    border-radius: 0;
   }
 
   .plb__close {
@@ -839,15 +842,15 @@
 
   .plb__dots {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
     justify-content: center;
     max-width: 70vw;
   }
 
   .plb__dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: var(--bg-color-light);
     cursor: pointer;
