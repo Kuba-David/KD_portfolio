@@ -1,7 +1,7 @@
   :root {
     --bg-color: #232323;
     --bg-color-dark: #1b1b1b;
-    --bg-color-light: #383838;
+    --bg-color-light: #424242;
     --accent: #FFE99F;
     --accent-dark: #B29F5D;
     --text-light: #ececec;
@@ -800,7 +800,6 @@
 
   .plb__arrow {
     position: absolute;
-    top: 50%;
     transform: translateY(-50%);
     background: transparent;
     font-size: var(--font-size-md);
@@ -811,8 +810,21 @@
     display: grid;
     place-items: center;
     cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
+    z-index: 1000;
+    /* opacity: 0; */
+    /* pointer-events: none; */
+  }
+
+  .is-disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  .plb__arrow--left {
+    left: var(--spacing-sm);
+  }
+  .plb__arrow--right {
+    right: var(--spacing-sm);
   }
 
   .plb__footer {
