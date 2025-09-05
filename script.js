@@ -1,4 +1,3 @@
-// Tenhle script řeší zalamování jednoznakovek. Přidává nedělitelnou mezeru před písmena, která by mohla zůstat na konci řádku.
 function fixWidows(selector = 'p, h1, h2, h3, h4, span, li') {
   const elements = document.querySelectorAll(selector);
   const regex = /(\s)([ksvzaiouKSZVAIUO])\s/g;
@@ -12,12 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   fixWidows();
 });
 
-// Tenhle skript přidává smooth scroll na odkazy s ID.
 document.getElementById('scrollToProjects').addEventListener('click', function () {
   document.querySelector('#projects').scrollIntoView({ behavior: 'smooth' });
 });
 
-// Lightbox pro více projektů (lokální pro každý .projects-grid, sdílený modal)
 (() => {
   const modal = document.getElementById('projectLightbox');
   if (!modal) return;
@@ -30,22 +27,18 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
   const btnPrev   = modal.querySelector('.plb__arrow--left');
   const btnNext   = modal.querySelector('.plb__arrow--right');
 
-  // Stav pro AKTUÁLNĚ otevřenou galerii
-  let items = [];              // [{el, src, alt}, ...] pro konkrétní .projects-grid
-  let dots  = [];              // NodeList teček pro aktuální galerii
+  let items = [];
+  let dots  = [];
   let index = 0;
 
-  // Zoom/pan/swipe stav
   let baseW = 0, baseH = 0;
   let scale = 1, tx = 0, ty = 0;
-  let gesture = null;          // 'swipe' | 'pan'
+  let gesture = null;
   let startX = 0, startY = 0, curX = 0, curY = 0;
   let panStartX = 0, panStartY = 0;
 
-  // double-tap detekce
   let lastTapTime = 0, lastTapX = 0, lastTapY = 0;
 
-  // --- Pomocné funkce ---
   function setupDots() {
     dotsWrap.innerHTML = items.map((_, i) => `<span class="plb__dot" data-i="${i}"></span>`).join('');
     dots = Array.from(dotsWrap.querySelectorAll('.plb__dot'));
@@ -93,7 +86,6 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
   }
 
   function updateNavState() {
-    // bez loopu (i když jsou šipky skryté, logika zůstává kvůli klávesám)
     const atFirst = index === 0;
     const atLast  = index === items.length - 1;
     btnPrev?.classList.toggle('is-disabled', atFirst);
@@ -111,7 +103,6 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
     imgEl.src = src;
     imgEl.alt = alt;
 
-    // aktivní tečka + čítač
     if (dots.length !== items.length) setupDots();
     dots.forEach((d, di) => d.classList.toggle('is-active', di === index));
     counterEl.textContent = `${index + 1} / ${items.length}`;
@@ -144,7 +135,6 @@ document.getElementById('scrollToProjects').addEventListener('click', function (
     document.body.style.overflow = '';
   }
 
-// --- Připojení na více galerií: .projects-grid i .gallery-carousel ---
 function attachLocalLightbox(containerSelector, imageSelector) {
   const containers = document.querySelectorAll(containerSelector);
   containers.forEach(container => {
@@ -158,25 +148,22 @@ function attachLocalLightbox(containerSelector, imageSelector) {
 
     if (!localItems.length) return;
 
-    // otevři modal při kliku na libovolný obrázek v tomto kontejneru
     container.addEventListener('click', (e) => {
       const img = e.target.closest('img');
       if (!img) return;
       const i = localItems.findIndex(it => it.el === img);
       if (i >= 0) {
-        items = localItems;   // ← přepni na lokální sadu této galerie
-        setupDots();          // ← vytvoř tečky pro aktuální sadu
-        openAt(i);            // ← otevři modal na daném indexu
+        items = localItems;
+        setupDots();
+        openAt(i);
       }
     });
   });
 }
 
-// Volání pro oba typy galerií:
 attachLocalLightbox('.projects-grid', '.item img');
 attachLocalLightbox('.gallery-carousel', '.gallery-item img');
 
-  // --- Ovládání / interakce ---
   btnClose.addEventListener('click', close);
   btnPrev?.addEventListener('click', () => { if (index > 0) show(index - 1, {fromKeyboard:true}); });
   btnNext?.addEventListener('click', () => { if (index < items.length - 1) show(index + 1, {fromKeyboard:true}); });
@@ -202,13 +189,11 @@ attachLocalLightbox('.gallery-carousel', '.gallery-item img');
     if (e.key === 'End'  && scale === 1) show(items.length - 1, {fromKeyboard:true});
   });
 
-  // Double-click (desktop)
   imgEl.addEventListener('dblclick', (e) => {
     e.preventDefault();
     toggleZoomAt(e.clientX, e.clientY);
   });
 
-  // Pointer gesta: swipe (scale=1) / pan (scale>1) + double-tap (touch)
   function onPointerDown(e) {
     if (modal.classList.contains('hidden')) return;
     e.preventDefault();
@@ -277,7 +262,6 @@ attachLocalLightbox('.gallery-carousel', '.gallery-item img');
   modal.addEventListener('pointerup', onPointerUp);
   modal.addEventListener('pointercancel', onPointerUp);
 
-  // Re-measure při resize (jen pokud nejsi v zoomu)
   window.addEventListener('resize', () => {
     if (!modal.classList.contains('hidden') && scale === 1) {
       requestAnimationFrame(() => { measureBase(); applyTransform(); });
